@@ -2,17 +2,20 @@ import React, { createContext, useReducer } from 'react';
 
 // 5. The reducer - this is used to update the state, based on the action
 export const AppReducer = (state, action) => {
+  
     let budget = 0;
     switch (action.type) {
         case 'ADD_EXPENSE':
             let total_budget = 0;
+
             total_budget = state.expenses.reduce(
                 (previousExp, currentExp) => {
                     return previousExp + currentExp.cost
                 },0
             );
             total_budget = total_budget + action.payload.cost;
-            action.type = "DONE";
+            action.type = "DONE"; 
+ 
             if(total_budget <= state.budget) {
                 total_budget = 0;
                 state.expenses.map((currentExp)=> {
@@ -61,6 +64,24 @@ export const AppReducer = (state, action) => {
             action.type = "DONE";
             state.budget = action.payload;
 
+            if (state.expenses) {
+                const totalExpenses = state.expenses.reduce((total, item) => {
+                return (total = total + item.cost);
+            }, 0);
+
+                if (state.budget<totalExpenses) {
+                    alert ("Budget cannot be lower than expenses");
+                    state.budget = totalExpenses;
+                }
+            }
+
+            if (state.budget>20000) {
+                alert ("Budget cannot exceed 20000");
+                state.budget = 20000;
+            }
+
+
+
             return {
                 ...state,
             };
@@ -73,6 +94,8 @@ export const AppReducer = (state, action) => {
 
         default:
             return state;
+
+
     }
 };
 
@@ -86,7 +109,7 @@ const initialState = {
         { id: "Human Resource", name: 'Human Resource', cost: 40 },
         { id: "IT", name: 'IT', cost: 500 },
     ],
-    currency: '£'
+    currency: '$'
 };
 
 // 2. Creates the context this is the thing our components import and use to get the state

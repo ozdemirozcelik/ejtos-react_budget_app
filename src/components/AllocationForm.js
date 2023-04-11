@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 
+
 const AllocationForm = (props) => {
     const { dispatch,remaining  } = useContext(AppContext);
 
@@ -8,8 +9,21 @@ const AllocationForm = (props) => {
     const [cost, setCost] = useState('');
     const [action, setAction] = useState('');
 
+    // check if numeric
+    function isNumeric(str) {
+        if (typeof str != "string") return false
+        return !isNaN(str) && 
+               !isNaN(parseFloat(str))
+      }
+
     const submitEvent = () => {
 
+            if (!isNumeric(cost)) {
+                alert("Shoud be numeric");
+                setCost("");
+                return
+            }
+          
             if(cost > remaining) {
                 alert("The value cannot exceed remaining funds  £"+remaining);
                 setCost("");
